@@ -13,11 +13,13 @@ public class ComputerBuilder implements IComputerBuilder {
         this.HDD = hdd;
     }
 
+    @Override
     public ComputerBuilder setDiscreteGraphicsCard(boolean discreteGraphicsCard) {
         this.discreteGraphicsCard = discreteGraphicsCard;
         return this;
     }
 
+    @Override
     public ComputerBuilder setBluetoothCard(boolean bluetoothCard) {
         this.bluetoothCard = bluetoothCard;
         return this;
