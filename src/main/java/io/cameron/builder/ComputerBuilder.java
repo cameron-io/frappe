@@ -1,23 +1,25 @@
 package io.cameron.builder;
 
 public class ComputerBuilder implements IComputerBuilder {
-	public String HDD;
+    public String CPU;
 	public String RAM;
-    public boolean isGraphicsCardEnabled;
-	public boolean isBluetoothEnabled;
+	public String HDD;
+    public boolean discreteGraphicsCard;
+	public boolean bluetoothCard;
 
-    public ComputerBuilder(String hdd, String ram) {
-        this.HDD = hdd;
+    public ComputerBuilder(String cpu, String hdd, String ram) {
+        this.CPU = cpu;
         this.RAM = ram;
+        this.HDD = hdd;
     }
 
-    public ComputerBuilder setGraphicsCardEnabled(boolean isGraphicsCardEnabled) {
-        this.isGraphicsCardEnabled = isGraphicsCardEnabled;
+    public ComputerBuilder setDiscreteGraphicsCard(boolean discreteGraphicsCard) {
+        this.discreteGraphicsCard = discreteGraphicsCard;
         return this;
     }
 
-    public ComputerBuilder setBluetoothEnabled(boolean isBluetoothEnabled) {
-        this.isBluetoothEnabled = isBluetoothEnabled;
+    public ComputerBuilder setBluetoothCard(boolean bluetoothCard) {
+        this.bluetoothCard = bluetoothCard;
         return this;
     }
 

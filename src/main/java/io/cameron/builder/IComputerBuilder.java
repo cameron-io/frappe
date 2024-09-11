@@ -1,7 +1,7 @@
 package io.cameron.builder;
 
 public interface IComputerBuilder {
-    IComputerBuilder setGraphicsCardEnabled(boolean isGraphicsCardEnabled);
-    IComputerBuilder setBluetoothEnabled(boolean isBluetoothEnabled);
+    IComputerBuilder setDiscreteGraphicsCard(boolean discreteGraphicsCard);
+    IComputerBuilder setBluetoothCard(boolean bluetoothCard);
     Computer build();
 }

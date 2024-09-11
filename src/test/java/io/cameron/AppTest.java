@@ -10,11 +10,11 @@ import io.cameron.builder.ComputerBuilder;
 public class AppTest {
     @Test
     public void computerBuilderTest() {
-        Computer computer = new ComputerBuilder("500 GB", "2 GB")
-            .setBluetoothEnabled(true)
-			.setGraphicsCardEnabled(true)
+        Computer computer = new ComputerBuilder("AMD", "500 GB", "2 GB")
+            .setDiscreteGraphicsCard(true)
+			.setBluetoothCard(true)
             .build();
-        assertTrue(computer.isBluetoothEnabled());
-        assertTrue(computer.isGraphicsCardEnabled());
+        assertTrue(computer.discreteGraphicsCard);
+        assertTrue(computer.bluetoothCard);
     }
 }
