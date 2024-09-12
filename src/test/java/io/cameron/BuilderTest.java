@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import io.cameron.builder.Computer;
 import io.cameron.builder.ComputerBuilder;
 
-public class AppTest {
+public class BuilderTest {
     @Test
     public void computerBuilderTest() {
         Computer computer = new ComputerBuilder("AMD", "500 GB", "2 GB")
