@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.cameron.threading.CounterThreads;
+import io.cameron.threading.CounterThread;
 
 public class ThreadingTest {
     @Test
@@ -14,17 +14,17 @@ public class ThreadingTest {
         final int TotalThreads = 4;
         final int StartingInterval = TotalTime/TotalThreads;
 
-        List<CounterThreads> cts = new ArrayList<CounterThreads>(TotalThreads);
+        List<CounterThread> cts = new ArrayList<CounterThread>(TotalThreads);
 
         for (int i = 1; i <= TotalThreads; i++) {
-            CounterThreads thread = new CounterThreads(i, StartingInterval/i);
+            CounterThread thread = new CounterThread(i, StartingInterval/i);
             thread.start();
             cts.add(thread);
         }
         // Wait for the thread to finish
         try {
             Thread.sleep(TotalTime);
-            for (CounterThreads ct : cts) {
+            for (CounterThread ct : cts) {
                 ct.join();
             }
         } catch (InterruptedException e) {

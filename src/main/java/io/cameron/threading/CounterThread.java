@@ -1,11 +1,11 @@
 package io.cameron.threading;
 
-public class CounterThreads extends Thread {
+public class CounterThread extends Thread {
     int threadNum;
     int interval;
     int i = 1;
 
-    public CounterThreads(int threadNum, int interval) {
+    public CounterThread(int threadNum, int interval) {
         super();
         this.threadNum = threadNum;
         this.interval = interval;
