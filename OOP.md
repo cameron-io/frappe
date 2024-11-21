@@ -48,13 +48,13 @@
 
 -   Single Responsibility Principle:
     -   closely related to concepts: low coupling & high cohesion
-    -   for example:
-        InvoiceService > AddInvoice > DeleteInvoice > ValidateInvoice > SendEmail > ErrorLogging
-        should be:
-        InvoiceService > AddInvoice > DeleteInvoice
-        ValidateService > Validate Invoice
-        EmailService > SendEmail
-        LoggerService > ErrorLogging
+        -   for example: 
+            -   InvoiceService:     AddInvoice, DeleteInvoice, ValidateInvoice, SendEmail, ErrorLogging
+        -   should be:
+            -   InvoiceService:     AddInvoice, DeleteInvoice
+            -   ValidateService:    ValidateInvoice
+            -   EmailService:       SendEmail
+            -   LoggerService:      ErrorLogging
 -   Open-Close Principle:
     -   modules, classes, functions etc. should be open for extension, close for modification:
         -   a module/class should be extendible without needing to alter its source code
