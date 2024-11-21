@@ -10,21 +10,12 @@ public class Card {
     }
 
     public String getCard() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.number);
-        sb.append(" of ");
-        switch (this.suit) {
-            case CLUBS:
-                sb.append("Clubs");
-                break;
-            case SPADES:
-                sb.append("Spades");
-                break;
-            case HEARTS:
-                sb.append("Hearts");
-                break;
-            case DIAMONDS:
-                sb.append("Diamonds");
+        StringBuilder sb = new StringBuilder().append(number).append(" of ");
+        switch (suit) {
+            case CLUBS -> sb.append("Clubs");
+            case SPADES -> sb.append("Spades");
+            case HEARTS -> sb.append("Hearts");
+            case DIAMONDS -> sb.append("Diamonds");
         }
         return sb.toString();
     }
