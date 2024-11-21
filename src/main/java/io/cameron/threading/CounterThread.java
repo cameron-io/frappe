@@ -14,7 +14,7 @@ public class CounterThread extends Thread {
     @Override
     public void run() {
         try {
-            while(i <= 10) {
+            while (i <= 10) {
                 System.out.println("Thread: " + this.threadNum + ", Counter: " + i);
                 Thread.sleep(interval);
                 i++;

@@ -21,7 +21,8 @@ public class Queue {
     }
 
     public void dequeue() {
-        if (this.head == null) return;
+        if (this.head == null)
+            return;
 
         var prev_head = this.head;
 
@@ -36,10 +37,11 @@ public class Queue {
     }
 
     public Node get(int index) {
-        if (index >= this.size) return null;
+        if (index >= this.size)
+            return null;
         var i = 0;
         var node = this.head;
-        while(i < index) {
+        while (i < index) {
             node = node.next;
             i++;
         }
@@ -47,13 +49,15 @@ public class Queue {
     }
 
     public void set(int index, String value) {
-        if (index >= this.size) return;
+        if (index >= this.size)
+            return;
         var node = this.get(index);
         node.value = value;
     }
 
     public void insert(int index, String value) {
-        if (index >= this.size) return;
+        if (index >= this.size)
+            return;
         var prev_node = this.get(index - 1);
         var new_node = new Node(value);
         new_node.next = prev_node.next;
@@ -62,7 +66,8 @@ public class Queue {
     }
 
     public void remove(int index) {
-        if (index >= this.size) return;
+        if (index >= this.size)
+            return;
         var prev_node = this.get(index - 1);
         var node = prev_node.next;
         prev_node.next = node.next;

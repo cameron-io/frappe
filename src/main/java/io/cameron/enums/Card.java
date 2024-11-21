@@ -16,7 +16,7 @@ public class Card {
         switch (this.suit) {
             case CLUBS:
                 sb.append("Clubs");
-                break;    
+                break;
             case SPADES:
                 sb.append("Spades");
                 break;

@@ -4,11 +4,12 @@ public class BicycleBuilder implements IBicycleBuilder {
     public String frame;
     public String wheels;
     public String tires;
-	public String crankSet;
-	public String handlebars;
+    public String crankSet;
+    public String handlebars;
     public int raceNumber;
 
-    public BicycleBuilder(String frame, String wheels, String tires, String crankSet, String handlebars) {
+    public BicycleBuilder(String frame, String wheels, String tires, String crankSet,
+            String handlebars) {
         this.frame = frame;
         this.wheels = wheels;
         this.tires = tires;

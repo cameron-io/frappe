@@ -5,7 +5,7 @@ public class Bicycle {
     public String wheels;
     public String tires;
     public String handlebars;
-	public String crankSet;
+    public String crankSet;
     // Not required
     public int raceNumber;
 
@@ -13,8 +13,8 @@ public class Bicycle {
         this.frame = builder.frame;
         this.wheels = builder.wheels;
         this.tires = builder.wheels;
-		this.handlebars = builder.handlebars;
-		this.crankSet = builder.crankSet;
+        this.handlebars = builder.handlebars;
+        this.crankSet = builder.crankSet;
         this.raceNumber = builder.raceNumber;
-	}
+    }
 }

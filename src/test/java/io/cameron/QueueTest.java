@@ -16,6 +16,7 @@ class TestUtils {
     }
 }
 
+
 public class QueueTest {
     @Test
     public void queueTest() {
