@@ -1,8 +1,7 @@
 package io.cameron;
 
-import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import io.cameron.threading.CounterThread;
@@ -10,21 +9,17 @@ import io.cameron.threading.CounterThread;
 public class ThreadingTest {
     @Test
     public void threadingTest() {
-        final int TotalTime = 2000;
-        final int TotalThreads = 4;
-        final int StartingInterval = TotalTime / TotalThreads;
+        final List<Integer> Threads = List.of(1, 2, 3, 4);
 
-        List<CounterThread> cts = new ArrayList<CounterThread>(TotalThreads);
-
-        for (int i = 1; i <= TotalThreads; i++) {
-            CounterThread thread = new CounterThread(i, StartingInterval / i);
+        List<CounterThread> counterThreads = Threads.stream().map((Integer i) -> {
+            CounterThread thread = new CounterThread(i);
             thread.start();
-            cts.add(thread);
-        }
-        // Wait for the thread to finish
+            return thread;
+        }).collect(Collectors.toList());
+
         try {
-            Thread.sleep(TotalTime);
-            for (CounterThread ct : cts) {
+            for (CounterThread ct : counterThreads) {
+                // Waits for the thread to finish
                 ct.join();
             }
         } catch (InterruptedException e) {
