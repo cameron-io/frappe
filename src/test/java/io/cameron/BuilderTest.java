@@ -10,10 +10,15 @@ import io.cameron.builder.BicycleBuilder;
 public class BuilderTest {
     @Test
     public void bicycleBuilderTest() {
-        Bicycle bicycle = new BicycleBuilder("Specialized Diverge E5 Premium Aluminum",
-                "AXIS Elite Disc", "Specialized Pathfinder Sport, 700x38c",
-                "Specialized Shallow Drop, 6061, 70x125mm, 31.8mm clamp", "Shimano Claris R200")
-                        .setRaceNumber(46).build();
+        String frame = "Specialized Diverge E5 Premium Aluminum";
+        String wheels = "AXIS Elite Disc";
+        String tires = "Specialized Pathfinder Sport, 700x38c";
+        String crankSet = "Shimano Claris R200";
+        String handlebars = "Specialized Shallow Drop, 6061, 70x125mm, 31.8mm clamp";
+
+        Bicycle bicycle = new BicycleBuilder(frame, wheels, tires, crankSet, handlebars)
+                .setRaceNumber(46).build();
+
         assertEquals(46, bicycle.raceNumber);
     }
 }
