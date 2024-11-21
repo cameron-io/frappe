@@ -77,3 +77,5 @@ SOLID Principles
 -   Dependency Inversion Principle:
     -   high-level classes should never depend on low-level implementations of other classes.
         -   instead, both should depend on abstractions.
+        -   another way is to inject dependencies into class definitions instead of hardcoding them:
+            -   this way, it abstracts the details & ensures that the high-level modules don't depend on low-level modules.
