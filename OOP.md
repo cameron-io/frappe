@@ -27,7 +27,7 @@
         -   interface can extend other interfaces
         -   a class can extend any number of interfaces.
 
-Design Patterns:
+## Design Patterns:
 
 -   Builder
     -   created to resolve issues with factory pattern
@@ -44,7 +44,7 @@ Design Patterns:
 -   Singleton
 -   Dependency Injection
 
-SOLID Principles
+## SOLID Principles
 
 -   Single Responsibility Principle:
     -   closely related to concepts: low coupling & high cohesion
