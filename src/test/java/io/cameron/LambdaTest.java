@@ -63,8 +63,9 @@ public class LambdaTest {
     }
 
     @Test
-    public void pureFunctionsModuleTest() {
-        String s = "App";
-        assertEquals(s + " " + s, PureFunctions.doubleString.apply(s));
+    public void pureFunctionsTest() {
+        assertEquals(10, PureFunctions.doubleIt.apply(5));
+        assertEquals(true, PureFunctions.areEqual.apply(5, 5));
+        assertEquals(false, PureFunctions.areEqual.apply(1, 5));
     }
 }
