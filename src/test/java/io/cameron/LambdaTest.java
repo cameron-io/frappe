@@ -28,6 +28,16 @@ public class LambdaTest {
     }
 
     @Test
+    public void compoundPredicateTest() {
+        Predicate<String> predicate1 = (String s) -> s == "!";
+        Predicate<String> predicate2 = (String s) -> s == "?";
+
+        assertEquals(false, predicate1.and(predicate2).test("!"));
+        assertEquals(true, predicate1.or(predicate2).test("!"));
+        assertEquals(true, predicate1.negate().test("Test"));
+    }
+
+    @Test
     public void listFilterTest() {
         List<String> list = List.of("one", "two", "three", "four");
         Predicate<String> predicate = (String s) -> s == "three";
