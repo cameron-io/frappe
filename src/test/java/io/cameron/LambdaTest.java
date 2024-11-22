@@ -63,7 +63,7 @@ public class LambdaTest {
     }
 
     @Test
-    public void moduleTest() {
+    public void pureFunctionsModuleTest() {
         String s = "App";
         assertEquals(s + " " + s, PureFunctions.doubleString.apply(s));
     }
