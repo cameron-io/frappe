@@ -1,9 +1,8 @@
 package io.cameron;
 
 import org.junit.jupiter.api.Test;
-
-import io.cameron.lists.Node;
-import io.cameron.lists.Queue;
+import io.cameron.linked_lists.Node;
+import io.cameron.linked_lists.Queue;
 
 class TestUtils {
     public static void printNodes(Queue queue) {

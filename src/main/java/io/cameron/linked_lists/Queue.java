@@ -1,4 +1,4 @@
-package io.cameron.lists;
+package io.cameron.linked_lists;
 
 public class Queue {
     public Node head = null;
