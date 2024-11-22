@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import io.cameron.functional.ActionDispatcher;
+import io.cameron.functional.PureFunctions;
 
 public class LambdaTest {
     @Test
@@ -50,14 +51,20 @@ public class LambdaTest {
 
     @Test
     public void listComprehensionTest() {
-        List<String> list = List.of("one", "two", "three", "four");
-        Function<String, Boolean> predicate = (String s) -> s == "three";
+        final List<String> list = List.of("one", "two", "three", "four");
+        final Function<String, Boolean> predicate = (String s) -> s == "three";
 
-        List<Boolean> results = list.stream().map(predicate).collect(Collectors.toList());
+        final List<Boolean> results = list.stream().map(predicate).collect(Collectors.toList());
 
         assertEquals(false, results.get(0));
         assertEquals(false, results.get(1));
         assertEquals(true, results.get(2));
         assertEquals(false, results.get(3));
+    }
+
+    @Test
+    public void moduleTest() {
+        String s = "App";
+        assertEquals(s + " " + s, PureFunctions.doubleString.apply(s));
     }
 }
