@@ -14,15 +14,10 @@ import io.cameron.trees.Traverse;
 
 public class BinaryTreeTest {
     private BinaryTree createBinaryTree() {
-        BinaryTree bt = new BinaryTree();
+        final List<Integer> list = List.of(6, 4, 8, 3, 5, 7, 9);
 
-        bt.add(6);
-        bt.add(4);
-        bt.add(8);
-        bt.add(3);
-        bt.add(5);
-        bt.add(7);
-        bt.add(9);
+        BinaryTree bt = new BinaryTree();
+        list.stream().forEach((Integer n) -> bt.add(n));
 
         return bt;
     }
