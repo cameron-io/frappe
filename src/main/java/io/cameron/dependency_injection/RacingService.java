@@ -1,21 +1,24 @@
 package io.cameron.dependency_injection;
 
-public class RacingCarType implements CarType {
-    private static RacingCarType instance;
+public class RacingService implements Service {
+    private static RacingService instance;
+    public String name;
     public int count = 0;
 
-    private RacingCarType() {}
+    private RacingService() {
+        this.name = "Racing Service";
+    }
 
-    public static RacingCarType getInstance() {
+    public static RacingService getInstance() {
         if (instance == null) {
-            instance = new RacingCarType();
+            instance = new RacingService();
         }
         return instance;
     }
 
     @Override
     public String getName() {
-        return "Racing Car";
+        return this.name;
     }
 
     @Override
