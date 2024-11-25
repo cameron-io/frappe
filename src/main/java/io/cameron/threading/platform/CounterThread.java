@@ -1,4 +1,4 @@
-package io.cameron.threading;
+package io.cameron.threading.platform;
 
 public class CounterThread extends Thread {
     int threadNum;
@@ -8,7 +8,7 @@ public class CounterThread extends Thread {
         this.threadNum = threadNum;
     }
 
-    public void worker() throws InterruptedException {
+    public void worker() {
         int i = 0;
         while (i <= 10) {
             i++;
@@ -17,10 +17,6 @@ public class CounterThread extends Thread {
 
     @Override
     public void run() {
-        try {
-            worker();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        worker();
     }
 }
