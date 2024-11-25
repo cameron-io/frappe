@@ -1,79 +1,5 @@
 package io.cameron.trees;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
-class Node {
-    int value;
-    Node left;
-    Node right;
-
-    Node(int value) {
-        this.value = value;
-        right = null;
-        left = null;
-    }
-}
-
-
-class Traverse {
-    public static void inOrder(Node node) {
-        inOrderRec(node, new ArrayList<>());
-    }
-
-    public static void preOrder(Node node) {
-        preOrderRec(node, new ArrayList<>());
-    }
-
-    public static void postOrder(Node node) {
-        postOrderRec(node, new ArrayList<>());
-    }
-
-    public static void levelOrder(Node root, List<Integer> list) {
-        if (root == null)
-            return;
-        Queue<Node> nodes = new LinkedList<>();
-        nodes.add(root);
-        while (!nodes.isEmpty()) {
-            Node node = nodes.remove();
-            list.add(node.value);
-            if (node.left != null) {
-                nodes.add(node.left);
-            }
-            if (node.right != null) {
-                nodes.add(node.right);
-            }
-        }
-    }
-
-    private static void inOrderRec(Node node, List<Integer> list) {
-        if (node == null)
-            return;
-        inOrderRec(node.left, list);
-        list.add(node.value);
-        inOrderRec(node.right, list);
-    }
-
-    private static void preOrderRec(Node node, List<Integer> list) {
-        if (node == null)
-            return;
-        list.add(node.value);
-        preOrderRec(node.left, list);
-        preOrderRec(node.right, list);
-    }
-
-    private static void postOrderRec(Node node, List<Integer> list) {
-        if (node == null)
-            return;
-        postOrderRec(node.left, list);
-        postOrderRec(node.right, list);
-        list.add(node.value);
-    }
-}
-
-
 public class BinaryTree {
     Node root;
 
@@ -81,6 +7,10 @@ public class BinaryTree {
 
     public void add(int value) {
         root = addRecursive(root, value);
+    }
+
+    public Node getRoot() {
+        return root;
     }
 
     public boolean containsNode(int value) {
