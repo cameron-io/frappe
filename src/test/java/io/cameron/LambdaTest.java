@@ -15,9 +15,12 @@ import io.cameron.functional.PureFunctions;
 public class LambdaTest {
     @Test
     public void actionDispatcherTest() {
-        ActionDispatcher<String> actionDispatcher = (String s) -> true;
+        ActionDispatcher<String> actionDispatcher1 = (String s) -> s == "Start";
+        assertEquals(true, actionDispatcher1.handle("Start"));
 
-        assertEquals(true, actionDispatcher.handle("Test"));
+        ActionDispatcher<String> actionDispatcher2 = (String s) -> s != "Continue";
+        ActionDispatcher<String> actionDispatcher3 = (String s) -> s == "Exit";
+        assertEquals(true, actionDispatcher2.handleBoth(actionDispatcher3).handle("Exit"));
     }
 
     @Test
