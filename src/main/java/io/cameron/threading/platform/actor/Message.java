@@ -1,4 +1,4 @@
-package io.cameron.threading.virtual;
+package io.cameron.threading.platform.actor;
 
 public class Message {
     public Action action;

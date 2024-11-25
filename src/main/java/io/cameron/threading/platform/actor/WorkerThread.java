@@ -1,12 +1,12 @@
-package io.cameron.threading.virtual;
+package io.cameron.threading.platform.actor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Actor extends Thread {
+public class WorkerThread extends Thread {
     List<Integer> numbers = new ArrayList<>();
 
-    public Actor() {
+    public WorkerThread() {
         super();
     }
 
@@ -20,17 +20,13 @@ public class Actor extends Thread {
     }
 
     public void handle(Message message) {
-        synchronized (this) {
-            switch (message.action) {
-                case INSERT -> this.numbers.add(message.value);
-                case EXIT -> this.interrupt();
-            }
+        switch (message.action) {
+            case INSERT -> this.numbers.add(message.value);
+            case EXIT -> this.interrupt();
         }
     }
 
     public List<Integer> getNumbers() {
-        synchronized (this) {
-            return this.numbers;
-        }
+        return this.numbers;
     }
 }
