@@ -1,4 +1,4 @@
-package io.cameron.threading.platform.actor;
+package io.cameron.concurrency.event_driven;
 
 public class Message {
     public Action action;
@@ -13,4 +13,3 @@ public class Message {
         this.value = value;
     }
 }
-

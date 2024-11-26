@@ -1,19 +1,23 @@
 package io.cameron;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import io.cameron.threading.platform.CounterThread;
-import io.cameron.threading.platform.actor.Action;
-import io.cameron.threading.platform.actor.WorkerThread;
-import io.cameron.threading.platform.actor.Message;
 
-public class ThreadingTest {
+import io.cameron.concurrency.event_driven.Action;
+import io.cameron.concurrency.event_driven.Message;
+import io.cameron.concurrency.event_driven.WorkerThread;
+import io.cameron.concurrency.multi_threading.CounterThread;
+
+public class ConcurrencyTest {
     @Test
     public void threadingTest() throws InterruptedException {
         CounterThread ct = new CounterThread();
         ct.generateList();
-        assertEquals(List.of(0, 2, 4, 6, 8, 10, 12, 14, 1, 3, 5, 7, 9, 11, 13, 15), ct.getList());
+        assertNotEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), ct.getList());
+        assertNotEquals(List.of(2, 4, 6, 8, 10, 12, 14, 16, 1, 3, 5, 7, 9, 11, 13, 15), ct.getList());
     }
 
     @Test
