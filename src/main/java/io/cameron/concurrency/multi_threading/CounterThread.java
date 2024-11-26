@@ -37,18 +37,18 @@ public class CounterThread {
     }
 
     public void generateList() {
-        final int threadCount = Runtime.getRuntime().availableProcessors();
+        final var threadCount = Runtime.getRuntime().availableProcessors();
 
         var intStream = IntStream.range(1, threadCount + 1);
-        final List<Integer> threads = intStream.boxed().collect(Collectors.toList());
+        var threadNumbers = intStream.boxed().collect(Collectors.toList());
 
-        List<Thread> ctThreads = threads.stream().map((Integer i) -> {
+        var threads = threadNumbers.stream().map((Integer i) -> {
             Thread thread = new AddQuickly(i, list);
             thread.start();
             return thread;
         }).collect(Collectors.toList());
 
-        ctThreads.forEach((Thread i) -> {
+        threads.forEach((Thread i) -> {
             try {
                 i.join();
             } catch (InterruptedException e) {
