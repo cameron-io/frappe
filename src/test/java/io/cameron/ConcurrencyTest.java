@@ -10,7 +10,7 @@ import io.cameron.concurrency.event_driven.Action;
 import io.cameron.concurrency.event_driven.CacheService;
 import io.cameron.concurrency.event_driven.Event;
 import io.cameron.concurrency.event_driven.EventBrokerService;
-import io.cameron.concurrency.event_driven.Client;
+import io.cameron.concurrency.event_driven.EventSubscriber;
 import io.cameron.concurrency.event_driven.Dto;
 import io.cameron.concurrency.multi_threading.CounterThread;
 
@@ -31,14 +31,14 @@ public class ConcurrencyTest {
     public void eventBrokerTest() throws InterruptedException {
         EventBrokerService eventBrokerService = EventBrokerService.getInstance();
         CacheService cacheService = CacheService.getInstance();
-        Client worker = new Client(eventBrokerService, cacheService);
-        Thread clientThread = worker;
-        clientThread.start();
+        EventSubscriber subscriber = new EventSubscriber(eventBrokerService, cacheService);
+        Thread subscriberThread = subscriber;
+        subscriberThread.start();
 
         eventBrokerService.publishEvent(
                 new Event(
                         Thread.currentThread(),
-                        clientThread, Action.INSERT,
+                        subscriberThread, Action.INSERT,
                         new Dto<Integer>(
                                 "UUID-1",
                                 5)));
@@ -49,7 +49,7 @@ public class ConcurrencyTest {
         eventBrokerService.publishEvent(
                 new Event(
                         Thread.currentThread(),
-                        clientThread,
+                        subscriberThread,
                         Action.INSERT,
                         new Dto<Integer>(
                                 "UUID-2",
@@ -61,7 +61,7 @@ public class ConcurrencyTest {
         eventBrokerService.publishEvent(
                 new Event(
                         Thread.currentThread(),
-                        clientThread,
+                        subscriberThread,
                         Action.INSERT,
                         new Dto<Integer>(
                                 "UUID-3",
@@ -74,19 +74,19 @@ public class ConcurrencyTest {
         assertEquals(List.of(), eventBrokerService.getEventQueue());
 
         // while the client awaits new events
-        assertEquals(true, clientThread.isAlive());
+        assertEquals(true, subscriberThread.isAlive());
 
         // gracefully exit
         eventBrokerService.publishEvent(
                 new Event(
                         Thread.currentThread(),
-                        clientThread,
+                        subscriberThread,
                         Action.EXIT));
 
         // allow time for the client to shutdown
         Thread.sleep(10);
-        assertEquals(false, clientThread.isAlive());
+        assertEquals(false, subscriberThread.isAlive());
 
-        clientThread.join();
+        subscriberThread.join();
     }
 }
