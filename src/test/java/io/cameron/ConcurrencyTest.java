@@ -7,7 +7,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import io.cameron.concurrency.event_driven.Action;
-import io.cameron.concurrency.event_driven.Message;
+import io.cameron.concurrency.event_driven.Event;
+import io.cameron.concurrency.event_driven.EventBroker;
 import io.cameron.concurrency.event_driven.WorkerThread;
 import io.cameron.concurrency.multi_threading.CounterThread;
 
@@ -21,19 +22,21 @@ public class ConcurrencyTest {
     }
 
     @Test
-    public void workerThreadTest() throws InterruptedException {
-        WorkerThread workerThread = new WorkerThread();
+    public void eventBrokerTest() throws InterruptedException {
+        EventBroker eventBroker = EventBroker.getInstance();
+        WorkerThread worker = new WorkerThread(eventBroker);
+        Thread workerThread = worker;
         workerThread.start();
 
-        workerThread.handle(new Message(Action.INSERT, 5));
-        assertEquals(List.of(5), workerThread.getNumbers());
-        workerThread.handle(new Message(Action.INSERT, 2));
-        assertEquals(List.of(5, 2), workerThread.getNumbers());
-        workerThread.handle(new Message(Action.INSERT, 3));
-        assertEquals(List.of(5, 2, 3), workerThread.getNumbers());
+        eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.INSERT, 5));
+        assertEquals(List.of(5), worker.getNumbers());
+        eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.INSERT, 2));
+        assertEquals(List.of(5, 2), worker.getNumbers());
+        eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.INSERT, 3));
+        assertEquals(List.of(5, 2, 3), worker.getNumbers());
 
         assertEquals(true, workerThread.isAlive());
-        workerThread.handle(new Message(Action.EXIT));
+        eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.EXIT));
         workerThread.join();
         assertEquals(false, workerThread.isAlive());
     }
