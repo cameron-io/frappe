@@ -4,14 +4,14 @@ public class Event {
     public Thread sender;
     public Thread recipient;
     public Action action;
-    public Integer value = null;
+    public Dto<Integer> dto;
 
     public Event(Thread sender, Thread recipient, Action action) {
         this.action = action;
     }
 
-    public Event(Thread sender, Thread recipient, Action action, Integer value) {
+    public Event(Thread sender, Thread recipient, Action action, Dto<Integer> dto) {
         this.action = action;
-        this.value = value;
+        this.dto = dto;
     }
 }

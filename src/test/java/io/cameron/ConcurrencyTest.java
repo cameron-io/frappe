@@ -7,9 +7,11 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import io.cameron.concurrency.event_driven.Action;
+import io.cameron.concurrency.event_driven.CacheService;
 import io.cameron.concurrency.event_driven.Event;
-import io.cameron.concurrency.event_driven.EventBroker;
-import io.cameron.concurrency.event_driven.WorkerThread;
+import io.cameron.concurrency.event_driven.EventBrokerService;
+import io.cameron.concurrency.event_driven.Client;
+import io.cameron.concurrency.event_driven.Dto;
 import io.cameron.concurrency.multi_threading.CounterThread;
 
 public class ConcurrencyTest {
@@ -27,21 +29,64 @@ public class ConcurrencyTest {
 
     @Test
     public void eventBrokerTest() throws InterruptedException {
-        EventBroker eventBroker = EventBroker.getInstance();
-        WorkerThread worker = new WorkerThread(eventBroker);
-        Thread workerThread = worker;
-        workerThread.start();
+        EventBrokerService eventBrokerService = EventBrokerService.getInstance();
+        CacheService cacheService = CacheService.getInstance();
+        Client worker = new Client(eventBrokerService, cacheService);
+        Thread clientThread = worker;
+        clientThread.start();
 
-        eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.INSERT, 5));
-        assertEquals(List.of(5), worker.getData());
-        eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.INSERT, 2));
-        assertEquals(List.of(5, 2), worker.getData());
-        eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.INSERT, 3));
-        assertEquals(List.of(5, 2, 3), worker.getData());
+        eventBrokerService.publishEvent(
+                new Event(
+                        Thread.currentThread(),
+                        clientThread, Action.INSERT,
+                        new Dto<Integer>(
+                                "UUID-1",
+                                5)));
 
-        assertEquals(true, workerThread.isAlive());
-        eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.EXIT));
-        workerThread.join();
-        assertEquals(false, workerThread.isAlive());
+        assertEquals(List.of(), cacheService.getAll());
+        assertEquals(5, cacheService.getItem("UUID-1"));
+
+        eventBrokerService.publishEvent(
+                new Event(
+                        Thread.currentThread(),
+                        clientThread,
+                        Action.INSERT,
+                        new Dto<Integer>(
+                                "UUID-2",
+                                2)));
+
+        assertEquals(List.of(5, 2), cacheService.getAll());
+        assertEquals(2, cacheService.getItem("UUID-2"));
+
+        eventBrokerService.publishEvent(
+                new Event(
+                        Thread.currentThread(),
+                        clientThread,
+                        Action.INSERT,
+                        new Dto<Integer>(
+                                "UUID-3",
+                                3)));
+
+        assertEquals(List.of(5, 3, 2), cacheService.getAll());
+        assertEquals(3, cacheService.getItem("UUID-3"));
+
+        // the event queue is now empty
+        assertEquals(List.of(), eventBrokerService.getEventQueue());
+
+        // while the client awaits new events
+        assertEquals(true, clientThread.isAlive());
+
+        // gracefully exit
+        eventBrokerService.publishEvent(
+                new Event(
+                        Thread.currentThread(),
+                        clientThread,
+                        Action.EXIT));
+
+        // allow time for the client to shutdown
+        Thread.sleep(10);
+        assertEquals(false, clientThread.isAlive());
+
+        clientThread.join();
     }
 }

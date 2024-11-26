@@ -3,18 +3,18 @@ package io.cameron.concurrency.event_driven;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class EventBroker {
-    private static EventBroker instance;
+public class EventBrokerService {
+    private static EventBrokerService instance;
     Queue<Event> eventQueue = new LinkedList<>();
 
-    private EventBroker() {
+    private EventBrokerService() {
     }
 
-    public static EventBroker getInstance() {
+    public static EventBrokerService getInstance() {
         if (instance == null) {
-            synchronized (EventBroker.class) {
+            synchronized (EventBrokerService.class) {
                 if (instance == null) {
-                    instance = new EventBroker();
+                    instance = new EventBrokerService();
                 }
             }
         }
@@ -27,5 +27,9 @@ public class EventBroker {
 
     synchronized public Event consumeEvent() {
         return eventQueue.remove();
+    }
+
+    synchronized public Queue<Event> getEventQueue() {
+        return eventQueue;
     }
 }
