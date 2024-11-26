@@ -29,11 +29,11 @@ public class ConcurrencyTest {
         workerThread.start();
 
         eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.INSERT, 5));
-        assertEquals(List.of(5), worker.getNumbers());
+        assertEquals(List.of(5), worker.getData());
         eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.INSERT, 2));
-        assertEquals(List.of(5, 2), worker.getNumbers());
+        assertEquals(List.of(5, 2), worker.getData());
         eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.INSERT, 3));
-        assertEquals(List.of(5, 2, 3), worker.getNumbers());
+        assertEquals(List.of(5, 2, 3), worker.getData());
 
         assertEquals(true, workerThread.isAlive());
         eventBroker.publishEvent(new Event(Thread.currentThread(), workerThread, Action.EXIT));

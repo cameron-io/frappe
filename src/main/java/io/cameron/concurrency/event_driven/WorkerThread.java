@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkerThread extends Thread {
-    List<Integer> numbers = new ArrayList<>();
+    List<Integer> data = new ArrayList<>();
     EventBroker eventBroker;
 
     public WorkerThread(EventBroker eventBroker) {
@@ -24,14 +24,22 @@ public class WorkerThread extends Thread {
         }
     }
 
-    public List<Integer> getNumbers() {
-        return this.numbers;
+    public List<Integer> getData() {
+        synchronized (data) {
+            return data;
+        }
     }
 
     private void handle(Event event) {
         switch (event.action) {
-            case INSERT -> this.numbers.add(event.value);
-            case EXIT -> this.interrupt();
+            case INSERT -> setData(event.value);
+            case EXIT -> interrupt();
+        }
+    }
+
+    synchronized private void setData(int value) {
+        synchronized (data) {
+            data.add(value);
         }
     }
 }
