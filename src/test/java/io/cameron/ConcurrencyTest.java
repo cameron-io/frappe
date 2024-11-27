@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import io.cameron.concurrency.event_driven.Action;
 import io.cameron.concurrency.event_driven.CacheService;
-import io.cameron.concurrency.event_driven.Event;
-import io.cameron.concurrency.event_driven.EventBrokerService;
-import io.cameron.concurrency.event_driven.EventSubscriber;
+import io.cameron.concurrency.event_driven.Message;
+import io.cameron.concurrency.event_driven.MessageBrokerService;
+import io.cameron.concurrency.event_driven.Subscriber;
 import io.cameron.concurrency.event_driven.Dto;
 import io.cameron.concurrency.multi_threading.CounterThread;
 import io.cameron.functional.interfaces.Function0;
@@ -30,47 +30,47 @@ public class ConcurrencyTest {
 
     @Test
     public void eventDrivenTest() throws InterruptedException {
-        var eventBrokerService = EventBrokerService.getInstance();
+        var messageBrokerService = MessageBrokerService.getInstance();
         var cacheService = CacheService.getInstance();
-        var subscriber = new EventSubscriber(eventBrokerService, cacheService);
+        var subscriber = new Subscriber(messageBrokerService, cacheService);
         Thread subscriberThread = subscriber;
         subscriberThread.start();
 
-        Function<Action, Event> eventFun1 = (action) -> {
-            return new Event(Thread.currentThread(), subscriberThread, action);
+        Function<Action, Message> messageFun1 = (action) -> {
+            return new Message(Thread.currentThread(), subscriberThread, action);
         };
 
-        Function3<Action, String, Integer, Event> eventFun3 = (action, k, v) -> {
+        Function3<Action, String, Integer, Message> messageFun3 = (action, k, v) -> {
             var dto = new Dto<Integer>(k, v);
-            return new Event(Thread.currentThread(), subscriberThread, action, dto);
+            return new Message(Thread.currentThread(), subscriberThread, action, dto);
         };
 
-        eventBrokerService.publishEvent(eventFun3.apply(Action.INSERT, "UUID-1", 5));
+        messageBrokerService.publishMessage(messageFun3.apply(Action.INSERT, "UUID-1", 5));
 
         assertEquals(List.of(), cacheService.getAll());
         assertEquals(5, cacheService.getItem("UUID-1"));
 
-        eventBrokerService.publishEvent(eventFun3.apply(Action.INSERT, "UUID-2", 2));
+        messageBrokerService.publishMessage(messageFun3.apply(Action.INSERT, "UUID-2", 2));
 
         assertEqualsUntilTrue(() -> List.of(5, 2).equals(cacheService.getAll()));
         assertEquals(2, cacheService.getItem("UUID-2"));
 
-        eventBrokerService.publishEvent(eventFun3.apply(Action.INSERT, "UUID-3", 3));
+        messageBrokerService.publishMessage(messageFun3.apply(Action.INSERT, "UUID-3", 3));
 
         assertEqualsUntilTrue(() -> List.of(5, 3, 2).equals(cacheService.getAll()));
         assertEquals(3, cacheService.getItem("UUID-3"));
 
-        eventBrokerService.publishEvent(eventFun3.apply(Action.DELETE, "UUID-2", null));
+        messageBrokerService.publishMessage(messageFun3.apply(Action.DELETE, "UUID-2", null));
         assertEqualsUntilTrue(() -> List.of(5, 3).equals(cacheService.getAll()));
 
-        // the event queue is now empty
-        assertEquals(List.of(), eventBrokerService.getEventQueue());
+        // the message queue is now empty
+        assertEquals(List.of(), messageBrokerService.getMessageQueue());
 
-        // while the client awaits new events
+        // while the client awaits new messages
         assertEquals(true, subscriberThread.isAlive());
 
         // gracefully exit
-        eventBrokerService.publishEvent(eventFun1.apply(Action.EXIT));
+        messageBrokerService.publishMessage(messageFun1.apply(Action.EXIT));
 
         // allow time for the client to shutdown
         Thread.sleep(10);
