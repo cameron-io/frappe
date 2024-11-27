@@ -1,6 +1,7 @@
 package io.cameron.functional;
 
 import java.util.function.Function;
+import io.cameron.functional.interfaces.Function2;
 
 public class PureFunctions {
     /*
@@ -12,7 +13,7 @@ public class PureFunctions {
         return n * 2;
     };
     // Custom IFunction interface with 2 args
-    public static final IFunction<Integer, Integer, Boolean> areEqual = (n1, n2) -> {
+    public static final Function2<Integer, Integer, Boolean> areEqual = (n1, n2) -> {
         return n1 == n2;
     };
 }
