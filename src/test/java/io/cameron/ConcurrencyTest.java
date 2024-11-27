@@ -29,53 +29,53 @@ public class ConcurrencyTest {
     }
 
     @Test
-    public void eventDrivenTest() throws InterruptedException {
-        var messageBrokerService = MessageBrokerService.getInstance();
+    public void messageBrokerTest() throws InterruptedException {
+        var msgBrokerService = MessageBrokerService.getInstance();
         var cacheService = CacheService.getInstance();
-        var subscriber = new Subscriber(messageBrokerService, cacheService);
+        var subscriber = new Subscriber(msgBrokerService, cacheService);
         Thread subscriberThread = subscriber;
         subscriberThread.start();
 
-        Function<Action, Message> messageFun1 = (action) -> {
+        Function<Action, Message> msgFun1 = (action) -> {
             return new Message(Thread.currentThread(), subscriberThread, action);
         };
 
-        Function3<Action, String, Integer, Message> messageFun3 = (action, k, v) -> {
+        Function3<Action, String, Integer, Message> msgFun3 = (action, k, v) -> {
             var dto = new Dto<Integer>(k, v);
             return new Message(Thread.currentThread(), subscriberThread, action, dto);
         };
 
-        messageBrokerService.publishMessage(messageFun3.apply(Action.INSERT, "UUID-1", 5));
+        msgBrokerService.publishMessage(msgFun3.apply(Action.INSERT, "UUID-1", 5));
 
         assertEquals(List.of(), cacheService.getAll());
         assertEquals(5, cacheService.getItem("UUID-1"));
 
-        messageBrokerService.publishMessage(messageFun3.apply(Action.INSERT, "UUID-2", 2));
+        msgBrokerService.publishMessage(msgFun3.apply(Action.INSERT, "UUID-2", 2));
 
         assertEqualsUntilTrue(() -> List.of(5, 2).equals(cacheService.getAll()));
         assertEquals(2, cacheService.getItem("UUID-2"));
 
-        messageBrokerService.publishMessage(messageFun3.apply(Action.INSERT, "UUID-3", 3));
+        msgBrokerService.publishMessage(msgFun3.apply(Action.INSERT, "UUID-3", 3));
 
         assertEqualsUntilTrue(() -> List.of(5, 3, 2).equals(cacheService.getAll()));
         assertEquals(3, cacheService.getItem("UUID-3"));
 
-        messageBrokerService.publishMessage(messageFun3.apply(Action.DELETE, "UUID-2", null));
+        msgBrokerService.publishMessage(msgFun3.apply(Action.DELETE, "UUID-2", null));
         assertEqualsUntilTrue(() -> List.of(5, 3).equals(cacheService.getAll()));
 
         // the message queue is now empty
-        assertEquals(List.of(), messageBrokerService.getMessageQueue());
+        assertEquals(List.of(), msgBrokerService.getMessageQueue());
 
         // while the client awaits new messages
         assertEquals(true, subscriberThread.isAlive());
 
         // gracefully exit
-        messageBrokerService.publishMessage(messageFun1.apply(Action.EXIT));
+        msgBrokerService.publishMessage(msgFun1.apply(Action.EXIT));
 
         // allow time for the client to shutdown
-        Thread.sleep(10);
-        assertEquals(false, subscriberThread.isAlive());
+        assertEqualsUntilTrue(() -> false == subscriberThread.isAlive());
 
+        // join current thread with terminated subscriber
         subscriberThread.join();
     }
 
