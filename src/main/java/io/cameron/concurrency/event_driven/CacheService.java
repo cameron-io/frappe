@@ -9,8 +9,7 @@ public class CacheService implements Cache<Integer> {
     private static CacheService instance;
     Map<String, Integer> data = new HashMap<String, Integer>();
 
-    private CacheService() {
-    }
+    private CacheService() {}
 
     public static CacheService getInstance() {
         if (instance == null) {
@@ -23,11 +22,11 @@ public class CacheService implements Cache<Integer> {
         return instance;
     }
 
-    synchronized public List<Integer> getAll() {
+    public List<Integer> getAll() {
         return new ArrayList<Integer>(data.values());
     }
 
-    synchronized public Integer getItem(String key) {
+    public Integer getItem(String key) {
         return data.get(key);
     }
 
@@ -36,8 +35,6 @@ public class CacheService implements Cache<Integer> {
     }
 
     synchronized public void delete(String key) {
-        synchronized (data) {
-            data.remove(key);
-        }
+        data.remove(key);
     }
 }

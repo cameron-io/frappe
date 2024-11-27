@@ -2,11 +2,11 @@ package io.cameron;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
+import java.time.Instant;
 import java.util.List;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
-
+import org.opentest4j.AssertionFailedError;
 import io.cameron.concurrency.event_driven.Action;
 import io.cameron.concurrency.event_driven.CacheService;
 import io.cameron.concurrency.event_driven.Event;
@@ -14,6 +14,7 @@ import io.cameron.concurrency.event_driven.EventBrokerService;
 import io.cameron.concurrency.event_driven.EventSubscriber;
 import io.cameron.concurrency.event_driven.Dto;
 import io.cameron.concurrency.multi_threading.CounterThread;
+import io.cameron.functional.interfaces.Function0;
 import io.cameron.functional.interfaces.Function3;
 
 public class ConcurrencyTest {
@@ -28,7 +29,7 @@ public class ConcurrencyTest {
     }
 
     @Test
-    public void eventBrokerTest() throws InterruptedException {
+    public void eventDrivenTest() throws InterruptedException {
         var eventBrokerService = EventBrokerService.getInstance();
         var cacheService = CacheService.getInstance();
         var subscriber = new EventSubscriber(eventBrokerService, cacheService);
@@ -51,16 +52,16 @@ public class ConcurrencyTest {
 
         eventBrokerService.publishEvent(eventFun3.apply(Action.INSERT, "UUID-2", 2));
 
-        assertEquals(List.of(5, 2), cacheService.getAll());
+        assertEqualsUntilTrue(() -> List.of(5, 2).equals(cacheService.getAll()));
         assertEquals(2, cacheService.getItem("UUID-2"));
 
         eventBrokerService.publishEvent(eventFun3.apply(Action.INSERT, "UUID-3", 3));
 
-        assertEquals(List.of(5, 3, 2), cacheService.getAll());
+        assertEqualsUntilTrue(() -> List.of(5, 3, 2).equals(cacheService.getAll()));
         assertEquals(3, cacheService.getItem("UUID-3"));
 
         eventBrokerService.publishEvent(eventFun3.apply(Action.DELETE, "UUID-2", null));
-        assertEquals(List.of(5, 3), cacheService.getAll());
+        assertEqualsUntilTrue(() -> List.of(5, 3).equals(cacheService.getAll()));
 
         // the event queue is now empty
         assertEquals(List.of(), eventBrokerService.getEventQueue());
@@ -76,5 +77,20 @@ public class ConcurrencyTest {
         assertEquals(false, subscriberThread.isAlive());
 
         subscriberThread.join();
+    }
+
+    /*
+     * Assertion for Equality with 100 ms timeout
+     */
+    public void assertEqualsUntilTrue(Function0<Boolean> expression) throws AssertionFailedError {
+        long now = Instant.now().toEpochMilli();
+        long timeout = now + 100;
+        while (now < timeout) {
+            if (expression.apply() == true) {
+                return;
+            }
+            now = Instant.now().toEpochMilli();
+        }
+        throw new AssertionFailedError();
     }
 }
