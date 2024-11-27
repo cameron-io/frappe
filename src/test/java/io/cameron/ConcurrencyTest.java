@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import java.time.Instant;
 import java.util.List;
-import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import io.cameron.concurrency.event_driven.Action;
@@ -15,7 +14,6 @@ import io.cameron.concurrency.event_driven.Subscriber;
 import io.cameron.concurrency.event_driven.Dto;
 import io.cameron.concurrency.multi_threading.CounterThread;
 import io.cameron.functional.interfaces.Function0;
-import io.cameron.functional.interfaces.Function3;
 
 public class ConcurrencyTest {
     @Test
@@ -33,50 +31,68 @@ public class ConcurrencyTest {
         var msgBrokerService = MessageBrokerService.getInstance();
         var cacheService = CacheService.getInstance();
         var subscriber = new Subscriber(msgBrokerService, cacheService);
-        Thread subscriberThread = subscriber;
-        subscriberThread.start();
+        subscriber.start();
 
-        Function<Action, Message> msgFun1 = (action) -> {
-            return new Message(Thread.currentThread(), subscriberThread, action);
-        };
+        /*
+         * New Message: Insert
+         */
+        final var msg1 = newMessage(subscriber, Action.UPSERT, "UUID-1", 5);
+        msgBrokerService.publishMessage(msg1);
 
-        Function3<Action, String, Integer, Message> msgFun3 = (action, k, v) -> {
-            var dto = new Dto<Integer>(k, v);
-            return new Message(Thread.currentThread(), subscriberThread, action, dto);
-        };
-
-        msgBrokerService.publishMessage(msgFun3.apply(Action.INSERT, "UUID-1", 5));
-
-        assertEquals(List.of(), cacheService.getAll());
+        assertEqualsUntilTrue(() -> List.of(5).equals(cacheService.getAll()));
         assertEquals(5, cacheService.getItem("UUID-1"));
 
-        msgBrokerService.publishMessage(msgFun3.apply(Action.INSERT, "UUID-2", 2));
+        /*
+         * New Message: Insert
+         */
+        final var msg2 = newMessage(subscriber, Action.UPSERT, "UUID-2", 2);
+        msgBrokerService.publishMessage(msg2);
 
         assertEqualsUntilTrue(() -> List.of(5, 2).equals(cacheService.getAll()));
         assertEquals(2, cacheService.getItem("UUID-2"));
 
-        msgBrokerService.publishMessage(msgFun3.apply(Action.INSERT, "UUID-3", 3));
+        /*
+         * New Message: Insert
+         */
+        final var msg3 = newMessage(subscriber, Action.UPSERT, "UUID-3", 3);
+        msgBrokerService.publishMessage(msg3);
 
         assertEqualsUntilTrue(() -> List.of(5, 3, 2).equals(cacheService.getAll()));
         assertEquals(3, cacheService.getItem("UUID-3"));
 
-        msgBrokerService.publishMessage(msgFun3.apply(Action.DELETE, "UUID-2", null));
+        /*
+         * New Message: Delete
+         */
+        final var msg4 = newMessage(subscriber, Action.DELETE, "UUID-2", null);
+        msgBrokerService.publishMessage(msg4);
+
         assertEqualsUntilTrue(() -> List.of(5, 3).equals(cacheService.getAll()));
 
         // the message queue is now empty
         assertEquals(List.of(), msgBrokerService.getMessageQueue());
 
         // while the client awaits new messages
-        assertEquals(true, subscriberThread.isAlive());
+        assertEquals(true, subscriber.isAlive());
 
-        // gracefully exit
-        msgBrokerService.publishMessage(msgFun1.apply(Action.EXIT));
+        /*
+         * New Message: gracefully exit
+         */
+        msgBrokerService.publishMessage(newMessage(subscriber, Action.EXIT));
 
         // allow time for the client to shutdown
-        assertEqualsUntilTrue(() -> false == subscriberThread.isAlive());
+        assertEqualsUntilTrue(() -> false == subscriber.isAlive());
 
         // join current thread with terminated subscriber
-        subscriberThread.join();
+        subscriber.join();
+    }
+
+    private Message newMessage(Thread recipient, Action action) {
+        return new Message(Thread.currentThread(), recipient, action);
+    }
+
+    private Message newMessage(Thread recipient, Action action, String k, Integer v) {
+        var dto = new Dto<Integer>(k, v);
+        return new Message(Thread.currentThread(), recipient, action, dto);
     }
 
     /*
