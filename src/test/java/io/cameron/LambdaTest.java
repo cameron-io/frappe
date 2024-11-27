@@ -9,20 +9,9 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import io.cameron.functional.ActionDispatcher;
 import io.cameron.functional.PureFunctions;
 
 public class LambdaTest {
-    @Test
-    public void actionDispatcherTest() {
-        ActionDispatcher<String> actionDispatcher1 = (String s) -> s == "Start";
-        assertEquals(true, actionDispatcher1.handle("Start"));
-
-        ActionDispatcher<String> actionDispatcher2 = (String s) -> s != "Continue";
-        ActionDispatcher<String> actionDispatcher3 = (String s) -> s == "Exit";
-        assertEquals(true, actionDispatcher2.handleBoth(actionDispatcher3).handle("Exit"));
-    }
-
     @Test
     public void predicateTest() {
         Predicate<String> predicate = (String s) -> s == "!";
@@ -43,10 +32,10 @@ public class LambdaTest {
 
     @Test
     public void listFilterTest() {
-        List<String> list = List.of("one", "two", "three", "four");
+        var list = List.of("one", "two", "three", "four");
         Predicate<String> predicate = (String s) -> s == "three";
 
-        List<String> results = list.stream().filter(predicate).collect(Collectors.toList());
+        var results = list.stream().filter(predicate).collect(Collectors.toList());
 
         assertEquals(1, results.size());
         assertEquals("three", results.get(0));
@@ -54,10 +43,10 @@ public class LambdaTest {
 
     @Test
     public void listComprehensionTest() {
-        final List<String> list = List.of("one", "two", "three", "four");
+        final var list = List.of("one", "two", "three", "four");
         final Function<String, Boolean> predicate = (String s) -> s == "three";
 
-        final List<Boolean> results = list.stream().map(predicate).collect(Collectors.toList());
+        final var results = list.stream().map(predicate).collect(Collectors.toList());
 
         assertEquals(false, results.get(0));
         assertEquals(false, results.get(1));
