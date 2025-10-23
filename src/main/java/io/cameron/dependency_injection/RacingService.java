@@ -1,6 +1,7 @@
 package io.cameron.dependency_injection;
 
 public class RacingService implements Service {
+
     private static RacingService instance;
     public String name;
     public int count = 0;
@@ -10,10 +11,12 @@ public class RacingService implements Service {
     }
 
     public static RacingService getInstance() {
-        if (instance == null) {
-            instance = new RacingService();
+        synchronized (RacingService.class) {
+            if (instance == null) {
+                instance = new RacingService();
+            }
+            return instance;
         }
-        return instance;
     }
 
     @Override

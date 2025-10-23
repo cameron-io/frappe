@@ -1,7 +1,8 @@
 package io.cameron.dependency_injection;
 
 public class Car {
-    private Service service;
+
+    private final Service service;
 
     /*
      * Car does not initialize the injected class. This leads to better separation of concerns.

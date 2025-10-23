@@ -1,6 +1,7 @@
 package io.cameron.dependency_injection;
 
 public class RoadService implements Service {
+
     private static RoadService instance;
     public String name;
     public int count = 0;
@@ -10,10 +11,12 @@ public class RoadService implements Service {
     }
 
     public static RoadService getInstance() {
-        if (instance == null) {
-            instance = new RoadService();
+        synchronized (RoadService.class) {
+            if (instance == null) {
+                instance = new RoadService();
+            }
+            return instance;
         }
-        return instance;
     }
 
     @Override
